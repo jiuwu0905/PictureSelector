@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.List;

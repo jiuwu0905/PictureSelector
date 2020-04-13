@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -14,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
@@ -29,8 +29,6 @@ import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
-import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.model.CutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -688,7 +686,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 startCrop(config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
-                ArrayList<CutInfo> cuts = new ArrayList<>();
                 int count = selectImages.size();
                 int imageNum = 0;
                 for (int i = 0; i < count; i++) {
@@ -700,17 +697,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     if (PictureMimeType.eqImage(media.getMimeType())) {
                         imageNum++;
                     }
-                    CutInfo cutInfo = new CutInfo();
-                    cutInfo.setId(media.getId());
-                    cutInfo.setPath(media.getPath());
-                    cutInfo.setImageWidth(media.getWidth());
-                    cutInfo.setImageHeight(media.getHeight());
-                    cutInfo.setMimeType(media.getMimeType());
-                    cutInfo.setAndroidQToPath(media.getAndroidQToPath());
-                    cutInfo.setId(media.getId());
-                    cutInfo.setDuration(media.getDuration());
-                    cutInfo.setRealPath(media.getRealPath());
-                    cuts.add(cutInfo);
                 }
                 if (imageNum <= 0) {
                     // 全是视频
@@ -718,7 +704,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     onBackPressed();
                 } else {
                     // 图片和视频共存
-                    startCrop(cuts);
+//                    startCrop(cuts);
                 }
             }
         } else {
@@ -739,28 +725,28 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 config.originalPath = image.getPath();
                 startCrop(config.originalPath, image.getMimeType());
             } else {
-                // 是图片和选择压缩并且是多张，调用批量压缩
-                ArrayList<CutInfo> cuts = new ArrayList<>();
-                int count = selectImages.size();
-                for (int i = 0; i < count; i++) {
-                    LocalMedia media = selectImages.get(i);
-                    if (media == null
-                            || TextUtils.isEmpty(media.getPath())) {
-                        continue;
-                    }
-                    CutInfo cutInfo = new CutInfo();
-                    cutInfo.setId(media.getId());
-                    cutInfo.setPath(media.getPath());
-                    cutInfo.setImageWidth(media.getWidth());
-                    cutInfo.setImageHeight(media.getHeight());
-                    cutInfo.setMimeType(media.getMimeType());
-                    cutInfo.setAndroidQToPath(media.getAndroidQToPath());
-                    cutInfo.setId(media.getId());
-                    cutInfo.setDuration(media.getDuration());
-                    cutInfo.setRealPath(media.getRealPath());
-                    cuts.add(cutInfo);
-                }
-                startCrop(cuts);
+//                // 是图片和选择压缩并且是多张，调用批量压缩
+//                ArrayList<CutInfo> cuts = new ArrayList<>();
+//                int count = selectImages.size();
+//                for (int i = 0; i < count; i++) {
+//                    LocalMedia media = selectImages.get(i);
+//                    if (media == null
+//                            || TextUtils.isEmpty(media.getPath())) {
+//                        continue;
+//                    }
+//                    CutInfo cutInfo = new CutInfo();
+//                    cutInfo.setId(media.getId());
+//                    cutInfo.setPath(media.getPath());
+//                    cutInfo.setImageWidth(media.getWidth());
+//                    cutInfo.setImageHeight(media.getHeight());
+//                    cutInfo.setMimeType(media.getMimeType());
+//                    cutInfo.setAndroidQToPath(media.getAndroidQToPath());
+//                    cutInfo.setId(media.getId());
+//                    cutInfo.setDuration(media.getDuration());
+//                    cutInfo.setRealPath(media.getRealPath());
+//                    cuts.add(cutInfo);
+//                }
+//                startCrop(cuts);
             }
         } else {
             onBackPressed();
@@ -770,32 +756,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case UCrop.REQUEST_MULTI_CROP:
-                    // 裁剪数据
-                    List<CutInfo> list = UCrop.getMultipleOutput(data);
-                    data.putParcelableArrayListExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST,
-                            (ArrayList<? extends Parcelable>) list);
-                    // 已选数量
-                    data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
-                            (ArrayList<? extends Parcelable>) selectImages);
-                    setResult(RESULT_OK, data);
-                    finish();
-                    break;
-                case UCrop.REQUEST_CROP:
-                    if (data != null) {
-                        data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
-                                (ArrayList<? extends Parcelable>) selectImages);
-                        setResult(RESULT_OK, data);
-                    }
-                    finish();
-                    break;
-            }
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastUtils.s(getContext(), throwable.getMessage());
-        }
     }
 
 

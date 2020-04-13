@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import android.support.annotation.NonNull;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -23,7 +23,6 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
-import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -123,9 +122,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case UCrop.REQUEST_CROP:
-                    singleCropHandleResult(data);
-                    break;
                 case PictureConfig.REQUEST_CAMERA:
                     requestCamera(data);
                     break;
@@ -134,61 +130,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             }
         } else if (resultCode == RESULT_CANCELED) {
             closeActivity();
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            if (data == null) {
-                return;
-            }
-            Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastUtils.s(getContext(), throwable.getMessage());
         }
     }
 
-    /**
-     * 单张图片裁剪
-     *
-     * @param data
-     */
-    protected void singleCropHandleResult(Intent data) {
-        if (data == null) {
-            return;
-        }
-        List<LocalMedia> medias = new ArrayList<>();
-        Uri resultUri = UCrop.getOutput(data);
-        if (resultUri == null) {
-            return;
-        }
-        String cutPath = resultUri.getPath();
-        // 单独拍照
-        LocalMedia media = new LocalMedia(config.cameraPath, 0, false,
-                config.isCamera ? 1 : 0, 0, config.chooseMode);
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-            media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
-            media.setAndroidQToPath(cutPath);
-            if (TextUtils.isEmpty(cutPath)) {
-                media.setCut(false);
-                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(config.cameraPath)) {
-                    String path = PictureFileUtils.getPath(this, Uri.parse(config.cameraPath));
-                    media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
-                } else {
-                    media.setSize(new File(config.cameraPath).length());
-                }
-            } else {
-                media.setSize(new File(cutPath).length());
-                media.setCut(true);
-            }
-        } else {
-            // 拍照产生一个临时id
-            media.setId(System.currentTimeMillis());
-            media.setSize(new File(TextUtils.isEmpty(cutPath)
-                    ? media.getPath() : cutPath).length());
-        }
-        media.setCutPath(cutPath);
-        String mimeType = PictureMimeType.getImageMimeType(cutPath);
-        media.setMimeType(mimeType);
-        medias.add(media);
-        handlerResult(medias);
-    }
 
 
     /**

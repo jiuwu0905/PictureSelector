@@ -3,14 +3,13 @@ package com.luck.picture.lib.config;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.yalantis.ucrop.UCrop;
 
 /**
  * @author：luck
  * @date：2020-01-09 13:33
  * @describe：对外提供配制UCrop类
  */
-public class UCropOptions extends UCrop.Options implements Parcelable {
+public class UCropOptions  implements Parcelable {
 
     @Override
     public int describeContents() {

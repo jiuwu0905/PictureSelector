@@ -2,12 +2,11 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.FloatRange;
-import androidx.annotation.IntRange;
-import androidx.annotation.StyleRes;
-import androidx.fragment.app.Fragment;
+import android.support.annotation.ColorInt;
+import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
+import android.support.annotation.StyleRes;
+import android.support.v4.app.Fragment;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -963,15 +962,10 @@ public class PictureSelectionModel {
             if (activity == null || selectionConfig == null) {
                 return;
             }
-            Intent intent;
-            if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
-                intent = new Intent(activity, PictureCustomCameraActivity.class);
-            } else {
-                intent = new Intent(activity, selectionConfig.camera
+            Intent intent = new Intent(activity, selectionConfig.camera
                         ? PictureSelectorCameraEmptyActivity.class :
                         selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
                                 : PictureSelectorActivity.class);
-            }
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -1030,15 +1024,10 @@ public class PictureSelectionModel {
             // 绑定回调监听
             PictureSelectionConfig.listener = new WeakReference<>(listener).get();
 
-            Intent intent;
-            if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
-                intent = new Intent(activity, PictureCustomCameraActivity.class);
-            } else {
-                intent = new Intent(activity, selectionConfig.camera
+            Intent intent = new Intent(activity, selectionConfig.camera
                         ? PictureSelectorCameraEmptyActivity.class :
                         selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
                                 : PictureSelectorActivity.class);
-            }
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivity(intent);
@@ -1067,15 +1056,10 @@ public class PictureSelectionModel {
             }
             // 绑定回调监听
             PictureSelectionConfig.listener = new WeakReference<>(listener).get();
-            Intent intent;
-            if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
-                intent = new Intent(activity, PictureCustomCameraActivity.class);
-            } else {
-                intent = new Intent(activity, selectionConfig.camera
+            Intent intent = new Intent(activity, selectionConfig.camera
                         ? PictureSelectorCameraEmptyActivity.class :
                         selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
                                 : PictureSelectorActivity.class);
-            }
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
