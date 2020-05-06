@@ -2,9 +2,9 @@ package com.luck.picture.lib.immersive;
 
 import android.app.Activity;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.view.Window;
 
-import androidx.annotation.ColorInt;
 import android.support.annotation.NonNull;
 
 /**
